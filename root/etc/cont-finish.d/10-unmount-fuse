@@ -1,7 +1,5 @@
 #!/usr/bin/with-contenv sh
 
-source /etc/colors.sh
-
 exec s6-setuidgid root fusermount -u -z $UNION_LOCATION &
 exec s6-setuidgid root fusermount -u -z $CLOUD_LOCATION &
 exec s6-setuidgid root fusermount -u -z $LANDING_LOCATION &
