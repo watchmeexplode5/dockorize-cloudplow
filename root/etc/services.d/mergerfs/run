@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv sh
+
+mergerfs_command="mergerfs $LOCAL_LOCATION$LOCAL_LOCATION2$LOCAL_LOCATION3$LOCAL_LOCATION4$LOCAL_LOCATION5:$CLOUD_LOCATION:$LANDING_LOCATION $UNION_LOCATION -f $MERGERFS_OPTIONS"
+
+while [ ! -f $MOUNTCHECK ]
+do
+  echo "INFO: Waiting for Rclone Mounts before calling MergerFS"
+  sleep 5
+done
+
+echo "INFO: Found Rclone Mounts. Will issue MergerFS Commands"
+echo "EXECUTING => $mergerfs_command"
+
+exec s6-setuidgid root $mergerfs_command

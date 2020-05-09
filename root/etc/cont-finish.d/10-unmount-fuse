@@ -1,4 +1,15 @@
 #!/usr/bin/with-contenv sh
 
-# unmount fuse
-fusermount -u -z /cloud
+source /etc/colors.sh
+
+exec s6-setuidgid root fusermount -u -z $UNION_LOCATION &
+exec s6-setuidgid root fusermount -u -z $CLOUD_LOCATION &
+exec s6-setuidgid root fusermount -u -z $LANDING_LOCATION &
+
+while [ -f $MOUNTCHECK ]
+do
+  echo "Rclone mounts not disconnected yet"
+  exec s6-setuidgid root fusermount -u -z $CLOUD_LOCATION &
+  exec s6-setuidgid root fusermount -u -z $LANDING_LOCATION &
+  sleep 5
+done

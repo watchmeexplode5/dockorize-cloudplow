@@ -1,6 +1,7 @@
 FROM rclone/rclone
 
-ARG BRANCH="master"ARG BRANCH="master"
+ARG BRANCH="master"
+ARG BRANCH="master"
 ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
 ARG VCS_REF="unknown"
@@ -15,7 +16,24 @@ LABEL maintainer=${COMMIT_AUTHOR} \
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # configure environment variables to keep the start script clean
-ENV CLOUDPLOW_CONFIG=/config/config.json CLOUDPLOW_LOGFILE=/config/cloudplow.log CLOUDPLOW_LOGLEVEL=DEBUG CLOUDPLOW_CACHEFILE=/config/cache.db
+ENV CLOUDPLOW_CONFIG=/config/config.json\
+MOUNTCHECK='/cloud/mount.check'\
+CLOUDPLOW_LOGFILE=/config/cloudplow.log\
+CLOUDPLOW_LOGLEVEL=DEBUG\
+CLOUDPLOW_CACHEFILE=/config/cache.db\
+CLOUD_LOCATION=/cloud\
+UNION_LOCATION=/union\
+LANDING_LOCATION=\
+LOCAL_LOCATION=/local\
+LOCAL_LOCATION2=\
+LOCAL_LOCATION3=\
+LOCAL_LOCATION4=\
+LOCAL_LOCATION5=\
+RCLONE_REMOTE_MOUNT=google_crypt:\
+RCLONE_LANDING_MOUNT=limit_test_crypt:\
+RCLONE_LOGFILE=/config/cloudplow.log\
+RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h --read-only --user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'\
+MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=partial,dropcacheonclose=true'
 
 # map /config to host directory containing cloudplow config (used to store configuration from app)
 VOLUME /config
@@ -32,6 +50,7 @@ VOLUME /data
 # install dependencies for cloudplow, and user management, upgrade pip
 RUN apk update --no-cache && \
     apk -U add --no-cache \
+    ca-certificates \
     coreutils \
     findutils \
     git \
@@ -56,10 +75,14 @@ ENV PATH=/opt/cloudplow:${PATH}
 RUN python3 -m pip install --no-cache-dir --upgrade -r requirements.txt
 
 # install mergerfs
-RUN git clone --depth=1 https://github.com/trapexit/mergerfs.git; \
+RUN apk --no-cache add git g++ make python python3 linux-headers; \
+    git clone --depth=1 https://github.com/trapexit/mergerfs.git; \
     git clone --depth=1 https://github.com/trapexit/mergerfs-tools.git; \
     cd mergerfs; make && make install; cd ..; \
-    cd mergerfs-tools; make && make install; cd ..; \
+    cd mergerfs-tools; make && make install; cd ..;
+
+# remove fuse allow-others comment
+RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
 # add s6-overlay scripts and config
 ADD root/ /
