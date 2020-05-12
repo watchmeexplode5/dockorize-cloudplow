@@ -39,11 +39,11 @@ cloudplow:
     - RCLONE_REMOTE_MOUNT=google_crypt:
     - RCLONE_LANDING_MOUNT=team_drive_crypt:
     - LOCAL_LOCATION=/cloudplow/local
-	- CLOUD_LOCATION=/cloudplow/cloud/media
-	- LANDING_LOCATION=/cloudplow/landing_pad/media
+    - CLOUD_LOCATION=/cloudplow/cloud/media
+    - LANDING_LOCATION=/cloudplow/landing_pad/media
     - MOUNT_CHECK=/cloudplow/cloud/media/mount.check
-	- RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h' 
-	- MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=off,dropcacheonclose=true'
+    - RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h'
+    - MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=off,dropcacheonclose=true'
   volumes:
     - /opt/cloudplow:/config/:rw
     - /home/<user>/.config/rclone:/rclone_config/:rw
@@ -60,44 +60,43 @@ Examples of configured files provided in the "examples_config_folder" on the git
 
 Folder structure to ensure ease of setup:
 
-
+```
 cloudplow
     │
     ├── cloud (Google Drive Mount)
     │     └── media
-	│           ├── movies
+    │           ├── movies
     │           ├── music
     │           └── tv
     │
     ├── landing_pad (Team Drive Mount)
-    │   
+    │
     ├── local
-	│	  ├── media
-	│     │     ├── movies
+    │     ├── media
+    │     │     ├── movies
     │     │     ├── music
-    │     │     └── tv	
-	│     │
-	│     └── downloads
+    │     │     └── tv
+    │     │
+    │     └── downloads
     │             ├── manual_downloads
     │             │
     │             ├── nzb_downloads
     │             │           ├── completed
-    │             │           └── incompleted    
+    │             │           └── incompleted
     │             │
     │             └── torrent_downloads
     │                         ├── completed
     │                         └── incompleted
-    │                   
-    │   
+    │
+    │
     └── union (Gdrive + Tdrive + Local)
-	  	  ├── media
-	      │     ├── movies
+          ├── media
+          │     ├── movies
           │     ├── music
-          │     └── tv            
+          │     └── tv
           │
-		  └── downloads
-   
-
+          └── downloads
+```
 
 Easy Mapping Guide for Dockers (For proper atomic-moves/hardlinkning):
 
