@@ -1,7 +1,7 @@
 # Rclone - MergerFS - Cloudplow (CURRENTLY NOT WORKING)
 
 
-A Docker image modified from [Sabrsorensen's Docker image] (https://github.com/sabrsorensen/alpine-cloudplow). This image provides an [Rclone Mount](https://github.com/rclone/rclone), [MergerFS](https://github.com/trapexit/mergerfs), and [Cloudplow ](https://github.com/l3uddz/cloudplow) together. 
+A Docker image modified from [Sabrsorensen's Docker image](https://github.com/sabrsorensen/alpine-cloudplow). This image provides an [Rclone Mount](https://github.com/rclone/rclone), [MergerFS](https://github.com/trapexit/mergerfs), and [Cloudplow ](https://github.com/l3uddz/cloudplow) together. 
 
 Currently NOT WORKING -- NEED TO FIX A FEW ENVIRONMENTAL VARIABLES AND CLEAN EVERYTHING UP.
 
