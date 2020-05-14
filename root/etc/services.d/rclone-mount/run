@@ -6,23 +6,23 @@ user=$(getent passwd $uid | awk -F: '{print $1}')
 rclone_conf_path=$(grep -P "rclone_config_path" ${CLOUDPLOW_CONFIG} | awk -F: '{print $2}' | awk -F\" '{print $2}')
 
 if [ -z "$RCLONE_REMOTE_MOUNT" ]; then
-  echo "ERROR: RCLONE_REMOTE_MOUNT environment variable was not passed to the container."
+  echo "ERROR: Rclone - RCLONE_REMOTE_MOUNT environment variable was not passed to the container."
   exit 1
   else
-  echo "INFO: Creating mountcheck file incase it's not present."
+  echo "INFO: Rclone - Creating mount.check file encase it's not present."
   touch mount.check
   rclone copy mount.check $RCLONE_REMOTE_MOUNT -vv --no-traverse
 fi
 
 if [ -z "$RCLONE_LANDING_MOUNT" ]; then
-  echo "INFO: RCLONE_LANDING_MOUNT environment variable was not passed to the container. Will Not Utilize within script."
+  echo "INFO: Rclone - RCLONE_LANDING_MOUNT environment variable was not passed to the container. Will Not Utilize within script."
   landing_mount_command=""
   else
-  echo "INFO: RCLONE_LANDING_MOUNT environment variable set. Will Mount in additions to the RCLONE_REMOTE_MOUNT"
-  landing_mount_command="rclone mount --config=${rclone_conf_path} $RCLONE_MOUNT_OPTIONS $RCLONE_LANDING_MOUNT $LANDING_LOCATION"
+  echo "INFO: Rclone - RCLONE_LANDING_MOUNT environment variable set. Will Mount in additions to the RCLONE_REMOTE_MOUNT"
+  landing_mount_command="rclone mount --config=${rclone_conf_path} $RCLONE_MOUNT_OPTIONS $RCLONE_LANDING_MOUNT $LANDING_LOCATION$MEDIA_SUBFOLDER"
 fi
 
-mount_command="rclone mount --config=${rclone_conf_path} $RCLONE_MOUNT_OPTIONS $RCLONE_REMOTE_MOUNT $CLOUD_LOCATION"
+mount_command="rclone mount --config=${rclone_conf_path} $RCLONE_MOUNT_OPTIONS $RCLONE_REMOTE_MOUNT $CLOUD_LOCATION$MEDIA_SUBFOLDER"
 
 echo "EXECUTING => $mount_command"
 exec \
