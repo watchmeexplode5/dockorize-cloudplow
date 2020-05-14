@@ -16,24 +16,20 @@ LABEL maintainer=${COMMIT_AUTHOR} \
 RUN ln /usr/local/bin/rclone /usr/bin/rclone
 
 # configure environment variables to keep the start script clean
-ENV CLOUDPLOW_CONFIG=/config/config.json\
-MOUNTCHECK='/cloud/mount.check'\
-CLOUDPLOW_LOGFILE=/config/cloudplow.log\
-CLOUDPLOW_LOGLEVEL=DEBUG\
-CLOUDPLOW_CACHEFILE=/config/cache.db\
-CLOUD_LOCATION=/cloud\
-UNION_LOCATION=/union\
-LANDING_LOCATION=\
-LOCAL_LOCATION=/local\
-LOCAL_LOCATION2=\
-LOCAL_LOCATION3=\
-LOCAL_LOCATION4=\
-LOCAL_LOCATION5=\
-RCLONE_REMOTE_MOUNT=google_crypt:\
-RCLONE_LANDING_MOUNT=limit_test_crypt:\
-RCLONE_LOGFILE=/config/cloudplow.log\
-RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h --read-only --user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'\
-MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=partial,dropcacheonclose=true'
+ENV CLOUDPLOW_CONFIG=/config/config.json
+ENV CLOUDPLOW_LOGFILE=/config/cloudplow.log
+ENV CLOUDPLOW_LOGLEVEL=DEBUG
+ENV CLOUDPLOW_CACHEFILE=/config/cache.db
+ENV LOCAL_LOCATION=/cloudplow/local
+ENV CLOUD_LOCATION=/cloudplow/cloud
+ENV UNION_LOCATION=/cloudplow/union
+ENV LANDING_LOCATION=/cloudplow/landing
+ENV MEDIA_SUBFOLDER=/media
+ENV RCLONE_REMOTE_MOUNT="google_crypt:"
+ENV RCLONE_LANDING_MOUNT="gcrypt:"
+ENV RCLONE_LOGFILE=/config/cloudplow.log
+ENV RCLONE_MOUNT_OPTIONS="--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h --read-only"
+ENV MERGERFS_OPTIONS="-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=partial,dropcacheonclose=true"
 
 # map /config to host directory containing cloudplow config (used to store configuration from app)
 VOLUME /config
@@ -47,6 +43,9 @@ VOLUME /service_accounts
 # map /data to media queued for upload
 VOLUME /data
 
+# change alpine repository to edge branch 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
 # install dependencies for cloudplow, and user management, upgrade pip
 RUN apk update --no-cache && \
     apk -U add --no-cache \
@@ -55,6 +54,7 @@ RUN apk update --no-cache && \
     findutils \
     git \
     grep \
+    mergerfs \
     py3-pip \
     python3 \
     shadow \
@@ -75,11 +75,7 @@ ENV PATH=/opt/cloudplow:${PATH}
 RUN python3 -m pip install --no-cache-dir --upgrade -r requirements.txt
 
 # install mergerfs
-RUN apk --no-cache add git g++ make python python3 linux-headers; \
-    git clone --depth=1 https://github.com/trapexit/mergerfs.git; \
-    git clone --depth=1 https://github.com/trapexit/mergerfs-tools.git; \
-    cd mergerfs; make && make install; cd ..; \
-    cd mergerfs-tools; make && make install; cd ..;
+#RUN mergerfs -y
 
 # remove fuse allow-others comment
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
