@@ -1,14 +1,30 @@
 #!/usr/bin/with-contenv sh
 
-mergerfs_command="mergerfs $LOCAL_LOCATION$LOCAL_LOCATION2$LOCAL_LOCATION3$LOCAL_LOCATION4$LOCAL_LOCATION5:$CLOUD_LOCATION:$LANDING_LOCATION $UNION_LOCATION -f $MERGERFS_OPTIONS"
+mkdir -p "$CLOUD_LOCATION$MEDIA_SUBFOLDER"
+mkdir -p "$UNION_LOCATION"
+mkdir -p "$LOCAL_LOCATION$MEDIA_SUBFOLDER"
+mkdir -p "$LOCAL_LOCATION/downloads"
 
-while [ ! -f $MOUNTCHECK ]
+if [ -z "$LANDING_LOCATION" ]; then
+  echo "INFO: MergerFS - LANDING_LOCATION not found. Will not add to mergerfs mount command."
+  landing_mount_mergerfs=""
+  else
+  echo "INFO: MergerFS - LANDING_LOCATION found. Will add to mergerfs mount command."
+  landing_mount_mergerfs=":$LANDING_LOCATION"
+  mkdir -p "$LANDING_LOCATION$MEDIA_SUBFOLDER"
+fi
+
+mergerfs_command="mergerfs $LOCAL_LOCATION:$CLOUD_LOCATION$landing_mount_mergerfs $UNION_LOCATION -f $MERGERFS_OPTIONS"
+
+MOUNTCHECK_LOCATION="$CLOUD_LOCATION$MEDIA_SUBFOLDER/mount.check"
+
+while [ ! -f $MOUNTCHECK_LOCATION ]
 do
-  echo "INFO: Waiting for Rclone Mounts before calling MergerFS"
+  echo "INFO: MergerFS - Waiting for Rclone Mounts before calling MergerFS"
   sleep 5
 done
 
-echo "INFO: Found Rclone Mounts. Will issue MergerFS Commands"
+echo "INFO: MergerFS - Found Rclone Mounts. Will issue MergerFS Commands"
 echo "EXECUTING => $mergerfs_command"
 
 exec s6-setuidgid root $mergerfs_command
