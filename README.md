@@ -4,6 +4,7 @@
 A Docker image modified from [Sabrsorensen's work](https://github.com/sabrsorensen/alpine-cloudplow). This image provides [Rclone with automount Mount](https://github.com/rclone/rclone), [MergerFS](https://github.com/trapexit/mergerfs), and [Cloudplow ](https://github.com/l3uddz/cloudplow) together. 
 
 STILL IN TESTING PHASE BUT FUNCTIONS AS EXPECTED
+To do: Restart configured Dockers if rclone mount goes down and remounts (to avoid other dependant dockers not see the mount). Possible use of SLAVE/SHARED drive option but limiting based on system.
 
 ## Application
 
