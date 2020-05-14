@@ -112,15 +112,25 @@ cloudplow
           └── downloads
 ```
 
+
 Easy Mapping Guide for Dockers (For proper atomic-moves/hardlinkning):
 
+
+```
 Reference: HOST PATH <----> CONTAINER PATH
 
-Media Servers: /host/cloudplow/union:/cloudplow/union
-Sonarr/Radarr/Lidarr: /host/cloudplow/union:/cloudplow/union/
-NZBs:	/host/cloudplow/local/downloads/nzb_downloads:/cloudplow/union/downloads/nzb_downloads
-Torrents: /host/cloudplow/local/downloads/torrents_downloads:/cloudplow/union/downloads/torrents_downloads
+Media Servers:
+/host/cloudplow/union <----> /cloudplow/union
 
+Sonarr/Radarr/Lidarr:
+/host/cloudplow/union <----> /cloudplow/union/
+
+NZBs:	
+/host/cloudplow/local/downloads/nzb_downloads <----> /cloudplow/union/downloads/nzb_downloads
+
+Torrents: 
+/host/cloudplow/local/downloads/torrents_downloads <----> /cloudplow/union/downloads/torrents_downloads
+```
 
 Union acheived through MergerFS. By default this will merger the cloud google drive, team drive, and local drive into a folder labeled union. When writes occur within union they will be written to the local drive temporarily then moved to their respected location via cloudplow.
 
