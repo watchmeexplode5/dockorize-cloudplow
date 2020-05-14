@@ -7,14 +7,15 @@ Currently NOT WORKING -- NEED TO FIX A FEW ENVIRONMENTAL VARIABLES AND CLEAN EVE
 
 ## Application
 
-[rclone](https://github.com/rclone/rclone)
-[mergerFS](https://github.com/trapexit/mergerfs)
-[cloudplow](https://github.com/l3uddz/cloudplow)
+[Rclone](https://github.com/rclone/rclone)
 
+[MergerFS](https://github.com/trapexit/mergerfs)
+
+[Cloudplow](https://github.com/l3uddz/cloudplow)
 
 ## Description
 
-When the container starts: Rclone will auto-mount your specified disks and create a union of cloud-local with MergerFS.
+When the container starts: Rclone will auto-mount your specified disks and create a union of your cloud + local files via MergerFS.
 Cloudplow will automatic trigger remote uploads to your drive (support for scheduled transfers, multiple remote/folder pairings, UnionFS control file cleanup, synchronization between rclone remotes, and service account rotation).
 
 ## Usage
