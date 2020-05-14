@@ -44,23 +44,28 @@ cloudplow:
 ```
 Other Optional Environment Variables: (If not set on run, docker will be built with defaults which are listed below)
 ```
+
+###Identifier Options:
 'PUID'='1000'
 'PGID'='1000'
 
+###Cloudplow Options:
 'CLOUDPLOW_LOGLEVEL'='DEBUG'
 'CLOUDPLOW_CONFIG'='/config/config.json'
 'CLOUDPLOW_CACHEFILE'='/config/cache.db'
 'CLOUDPLOW_LOGFILE'='/config/cloudplow.log'
 
+###Location Options:
 'LOCAL_LOCATION'='/cloudplow/local'
 'CLOUD_LOCATION'='/cloudplow/cloud/'
 'LANDING_LOCATION'='/cloudplow/landing_pad'
 'UNION_LOCATION'='/cloudplow/union'
 'MEDIA_SUBFOLDER'='/media'
 
+###Rclone and MergerFS Options:
 'RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h'
-
 'MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=off,dropcacheonclose=true'
+
 ```
 
 Upon first run, the container will generate a sample config.json in the container's /config. Edit this config.json to your liking. Be sure to set rclone_config_path to the location of the rclone.conf you mapped into the container. 
