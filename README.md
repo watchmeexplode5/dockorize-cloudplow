@@ -1,9 +1,9 @@
-# Rclone - MergerFS - Cloudplow (CURRENTLY NOT WORKING)
+# Rclone - MergerFS - Cloudplow (BETA)
 
 
 A Docker image modified from [Sabrsorensen's work](https://github.com/sabrsorensen/alpine-cloudplow). This image provides [Rclone with automount Mount](https://github.com/rclone/rclone), [MergerFS](https://github.com/trapexit/mergerfs), and [Cloudplow ](https://github.com/l3uddz/cloudplow) together. 
 
-Currently NOT WORKING -- NEED TO FIX A FEW ENVIRONMENTAL VARIABLES AND CLEAN EVERYTHING UP.
+STILL IN TESTING PHASE BUT FUNCTIONS AS EXPECTED
 
 ## Application
 
@@ -31,20 +31,9 @@ cloudplow:
   image: XXXXXXXX/rclone-mergerfs-cloudplow
   container_name: cloudplow
   environment:
-    - PUID=`99`
-    - PGID=`100`
-    - CLOUDPLOW_CONFIG=/config/config.json
-    - CLOUDPLOW_LOGFILE=/config/cloudplow.log
-    - CLOUDPLOW_LOGLEVEL=DEBUG
-    - CLOUDPLOW_CACHEFILE=/config/cache.db
     - RCLONE_REMOTE_MOUNT=google_crypt:
     - RCLONE_LANDING_MOUNT=team_drive_crypt:
-    - LOCAL_LOCATION=/cloudplow/local
-    - CLOUD_LOCATION=/cloudplow/cloud/media
     - LANDING_LOCATION=/cloudplow/landing_pad/media
-    - MOUNT_CHECK=/cloudplow/cloud/media/mount.check
-    - RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h'
-    - MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=off,dropcacheonclose=true'
   volumes:
     - /opt/cloudplow:/config/:rw
     - /home/<user>/.config/rclone:/rclone_config/:rw
@@ -53,7 +42,26 @@ cloudplow:
     - /etc/localtime:/etc/localtime:ro
   restart: unless-stopped
 ```
+Other Optional Environment Variables: (If not set on run, docker will be built with defaults which are listed below)
+```
+'PUID'='1000'
+'PGID'='1000'
 
+'CLOUDPLOW_LOGLEVEL'='DEBUG'
+'CLOUDPLOW_CONFIG'='/config/config.json'
+'CLOUDPLOW_CACHEFILE'='/config/cache.db'
+'CLOUDPLOW_LOGFILE'='/config/cloudplow.log'
+
+'LOCAL_LOCATION'='/cloudplow/local'
+'CLOUD_LOCATION'='/cloudplow/cloud/'
+'LANDING_LOCATION'='/cloudplow/landing_pad'
+'UNION_LOCATION'='/cloudplow/union'
+'MEDIA_SUBFOLDER'='/media'
+
+'RCLONE_MOUNT_OPTIONS='--allow-other --buffer-size 256M --dir-cache-time 1000h --log-level INFO --log-file /config/rclone.log --poll-interval 15s --timeout 1h'
+
+'MERGERFS_OPTIONS='-o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=off,dropcacheonclose=true'
+```
 
 Upon first run, the container will generate a sample config.json in the container's /config. Edit this config.json to your liking. Be sure to set rclone_config_path to the location of the rclone.conf you mapped into the container. 
 
